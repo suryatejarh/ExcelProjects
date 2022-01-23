@@ -1,0 +1,9 @@
+
+Private Sub Worksheet_Activate()
+Worksheets("Sheet1").Protect "2048", UserInterfaceOnly:=True
+End Sub
+
+Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean)
+Cancel = True
+End Sub
+

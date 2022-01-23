@@ -1,0 +1,258 @@
+Attribute VB_Name = "Module1"
+Option Explicit
+Public score As Long
+Public HighScore As Long
+
+Sub Down_2048()
+
+Dim i As Integer, j As Integer, k As Integer, check As Integer
+check = 0
+
+For k = 1 To 4
+    For i = 4 To 1 Step -1
+        If Cells(i, k) = "" Then
+            For j = (i - 1) To 1 Step -1
+                If Cells(j, k) <> "" Then
+                    Cells(i, k) = Cells(j, k)
+                    Cells(j, k) = ""
+                    check = check + 1
+                    GoTo Step1
+                End If
+            Next j
+        Else
+Step1:
+            For j = (i - 1) To 1 Step -1
+                If Cells(i, k) = Cells(j, k) Then
+                    score = score + Cells(i, k) * 2
+                    If HighScore < score Then HighScore = score
+                    Cells(i, k) = Cells(i, k) * 2
+                    Cells(j, k) = ""
+                    check = check + 1
+                    Exit For
+                Else
+                If Cells(j, k) <> "" Then Exit For
+                End If
+            Next j
+        End If
+    Next i
+Next k
+
+If check > 0 Then
+Call Generate
+Else
+Call CheckEnd
+End If
+
+Range("J2") = score
+Range("J4") = HighScore
+
+End Sub
+
+Sub Up_2048()
+
+Dim i As Integer, j As Integer, k As Integer, check As Integer
+check = 0
+
+For k = 1 To 4
+    For i = 1 To 4
+        If Cells(i, k) = "" Then
+            For j = (i + 1) To 4
+                If Cells(j, k) <> "" Then
+                    Cells(i, k) = Cells(j, k)
+                    Cells(j, k) = ""
+                    check = check + 1
+                    GoTo Step1
+                End If
+            Next j
+        Else
+Step1:
+            For j = (i + 1) To 4
+                If Cells(i, k) = Cells(j, k) Then
+                    score = score + Cells(i, k) * 2
+                    If HighScore < score Then HighScore = score
+                    Cells(i, k) = Cells(i, k) * 2
+                    Cells(j, k) = ""
+                    check = check + 1
+                    Exit For
+                Else
+                If Cells(j, k) <> "" Then Exit For
+                End If
+            Next j
+        End If
+    Next i
+Next k
+
+If check > 0 Then
+Call Generate
+Else
+Call CheckEnd
+End If
+
+Range("J2") = score
+Range("J4") = HighScore
+
+End Sub
+
+Sub Left_2048()
+
+Dim i As Integer, j As Integer, k As Integer, check As Integer
+check = 0
+
+For k = 1 To 4
+    For i = 1 To 4
+        If Cells(k, i) = "" Then
+            For j = (i + 1) To 4
+                If Cells(k, j) <> "" Then
+                    Cells(k, i) = Cells(k, j)
+                    Cells(k, j) = ""
+                    check = check + 1
+                    GoTo Step1
+                End If
+            Next j
+        Else
+Step1:
+            For j = (i + 1) To 4
+                If Cells(k, i) = Cells(k, j) Then
+                    score = score + Cells(k, i) * 2
+                    If HighScore < score Then HighScore = score
+                    Cells(k, i) = Cells(k, i) * 2
+                    Cells(k, j) = ""
+                    check = check + 1
+                    Exit For
+                Else
+                If Cells(k, j) <> "" Then Exit For
+                End If
+            Next j
+        End If
+    Next i
+Next k
+
+If check > 0 Then
+Call Generate
+Else
+Call CheckEnd
+End If
+
+Range("J2") = score
+Range("J4") = HighScore
+
+End Sub
+
+Sub Right_2048()
+
+Dim i As Integer, j As Integer, k As Integer, check As Integer
+check = 0
+
+For k = 1 To 4
+    For i = 4 To 1 Step -1
+        If Cells(k, i) = "" Then
+            For j = (i - 1) To 1 Step -1
+                If Cells(k, j) <> "" Then
+                    Cells(k, i) = Cells(k, j)
+                    Cells(k, j) = ""
+                    check = check + 1
+                    GoTo Step1
+                End If
+            Next j
+        Else
+Step1:
+            For j = (i - 1) To 1 Step -1
+                If Cells(k, i) = Cells(k, j) Then
+                    score = score + Cells(k, i) * 2
+                    If HighScore < score Then HighScore = score
+                    Cells(k, i) = Cells(k, i) * 2
+                    Cells(k, j) = ""
+                    check = check + 1
+                    Exit For
+                Else
+                If Cells(k, j) <> "" Then Exit For
+                End If
+            Next j
+        End If
+    Next i
+Next k
+
+If check > 0 Then
+Call Generate
+Else
+Call CheckEnd
+End If
+
+Range("J2") = score
+Range("J4") = HighScore
+
+End Sub
+
+Sub Generate()
+
+Dim Target As Range, i As Integer, j As Integer
+i = Application.WorksheetFunction.RandBetween(1, 4)
+j = Application.WorksheetFunction.RandBetween(1, 4)
+
+Set Target = Cells(i, j)
+
+If Target <> "" Then
+Call Generate
+Exit Sub
+Else
+Target = 2
+End If
+
+
+End Sub
+
+Sub StartGame()
+Range("A1:D4") = ""
+score = 0
+
+On Error GoTo msg1
+
+Call Generate
+
+Range("J2") = score
+
+Application.OnKey "{DOWN}", "Down_2048"
+Application.OnKey "{UP}", "Up_2048"
+Application.OnKey "{LEFT}", "Left_2048"
+Application.OnKey "{RIGHT}", "Right_2048"
+Exit Sub
+
+msg1:
+MsgBox ("Game Over")
+End Sub
+
+Sub CheckEnd()
+Dim new1
+Dim i As Integer
+Dim j As Integer
+
+Dim a As Integer, b As Integer, cell As Range, tgt As Range
+
+For i = 1 To 4
+    For j = 1 To 4
+        If Cells(i, j) = "" Then
+        Exit Sub
+        End If
+    Next j
+Next i
+
+
+
+For Each cell In Range("A1:D4")
+    For a = -1 To 1
+        For b = -1 To 1
+            If Not (a = 0 Xor b = 0) Then GoTo skip
+            If cell.Row + a <= 0 Or cell.Column + b <= 0 Then GoTo skip
+            Set tgt = cell.Offset(a, b)
+            If tgt.Value = cell.Value Then Exit Sub
+skip:
+        Next b
+    Next a
+Next cell
+
+
+new1 = MsgBox("Game Over. Do you want to play again", vbYesNo)
+
+If new1 = vbYes Then Call StartGame
+
+End Sub

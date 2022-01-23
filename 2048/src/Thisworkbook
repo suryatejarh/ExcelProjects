@@ -1,0 +1,22 @@
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+Cancel = False
+Application.DisplayAlerts = False
+ActiveWorkbook.Save
+Application.OnKey "{DOWN}"
+Application.OnKey "{UP}"
+Application.OnKey "{LEFT}"
+Application.OnKey "{RIGHT}"
+Application.DisplayAlerts = True
+
+End Sub
+
+Private Sub Workbook_Open()
+Worksheets(1).Protect "2048", UserInterfaceOnly:=True
+score = Range("J2")
+HighScore = Range("J4")
+Application.OnKey "{DOWN}", "Down_2048"
+Application.OnKey "{UP}", "Up_2048"
+Application.OnKey "{LEFT}", "Left_2048"
+Application.OnKey "{RIGHT}", "Right_2048"
+End Sub
+
